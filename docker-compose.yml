@@ -1,44 +1,44 @@
-version: '3.3'
+version: "3.3"
 services:
   traefik:
-    image: 'traefik:v2.1'
+    image: "traefik:v2.1"
     container_name: traefik
     command:
-      - '--api.insecure=true'
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.web.address=:80'
-      - '--metrics=true'
-      - '--metrics.influxdb=true'
-      - '--metrics.influxdb.address=influxdb:8089'
-      - '--metrics.influxdb.protocol=udp'
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--metrics=true"
+      - "--metrics.influxdb=true"
+      - "--metrics.influxdb.address=influxdb:8089"
+      - "--metrics.influxdb.protocol=udp"
     ports:
-      - '80:80'
-      - '8080:8080'
+      - "80:80"
+      - "8080:8080"
     volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   static1:
-    image: 'nginx:alpine'
+    image: "nginx:alpine"
     volumes:
-      - './webstatic1:/usr/share/nginx/html:ro'
+      - "./webstatic1:/usr/share/nginx/html:ro"
     labels:
       - traefik.enable=true
       - traefik.http.routers.static1.rule=Host(`static1.manomano.com`)
       - traefik.http.routers.static1.entrypoints=web
   static2:
-    image: 'nginx:alpine'
+    image: "nginx:alpine"
     volumes:
-      - './webstatic2:/usr/share/nginx/html:ro'
+      - "./webstatic2:/usr/share/nginx/html:ro"
     labels:
       - traefik.enable=true
       - traefik.http.routers.static2.rule=Host(`static2.manomano.com`)
       - traefik.http.routers.static2.entrypoints=web
   influxdb:
-    image: 'influxdb:1.5-alpine'
+    image: "influxdb:1.5-alpine"
     labels:
       - traefik.enable=false
     ports:
-      - '8083:8083'
+      - "8083:8083"
     environment:
       - INFLUXDB_ADMIN_USER=admin
       - INFLUXDB_ADMIN_PASSWORD=admin
@@ -46,7 +46,7 @@ services:
   grafana:
     image: grafana/grafana
     ports:
-      - '3000:3000'
+      - "3000:3000"
     labels:
       - traefik.enable=true
       - traefik.http.routers.grafana.rule=Host(`grafana.manomano.com`)
