@@ -1,0 +1,37 @@
+(function(config) {
+  const platform = window.manomano.platform;
+
+  const shouldPlatformUseStab = config.upgradedPlatforms.includes(platform);
+
+  // 🔪
+  const scripts = shouldPlatformUseStab ? config.urls.v2 : config.urls.v1;
+
+  function injectScript(src, callback) {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = src;
+    script.addEventListener('load', callback);
+    document.body.appendChild(script);
+  }
+
+  function injects(scrs) {
+    if (scrs.length === 0) return;
+    const scr = scrs.shift();
+
+    injectScript(scr, injects.bind(undefined, scrs));
+  }
+
+  injects(scripts);
+})({
+  upgradedPlatforms: [],
+  urls: {
+    v1: [
+      'https://static.bengal.manomano.com/config.js',
+      'https://static.bengal.manomano.com/main.js?v=2.9.0',
+    ],
+    v2: [
+      'https://widget.bengal.manomano.com/config.js',
+      'https://widget.bengal.manomano.com/main.js?v=2.9.0',
+    ],
+  },
+});
